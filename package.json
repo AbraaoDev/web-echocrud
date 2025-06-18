@@ -29,7 +29,8 @@
 		"vue-router": "^4.5.1",
 		"zod": "^3.25.67"
 	},
-	"devDependencies": {		
- 	 "typescript": "^5.8.3"
-  }
+	"devDependencies": {
+		"@nuxtjs/google-fonts": "^3.2.0",
+		"typescript": "^5.8.3"
+	}
 }
