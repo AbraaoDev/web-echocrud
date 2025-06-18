@@ -1,12 +1,15 @@
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
-  modules: ["shadcn-nuxt", "@nuxtjs/google-fonts"],
+  modules: ["shadcn-nuxt", "@nuxtjs/google-fonts", "@nuxt/image"],
   googleFonts: {
     families: {
-      "Titillium Web": [400, 700],
+      "Titillium Web": [400, 600, 700],
     },
     display: "swap",
+  },
+  image: {
+    quality: 80,
   },
   css: ["~/assets/css/tailwind.css"],
   vite: {
