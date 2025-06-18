@@ -1,8 +1,4 @@
-<script setup lang="ts">
-definePageMeta({
-  layout: 'dash-layout',
-});
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div>
