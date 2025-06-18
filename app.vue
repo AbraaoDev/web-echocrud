@@ -1,10 +1,6 @@
-<script setup lang="ts">
-const layout = 'dash-layout';
-</script>
-
 <template>
   <div>
-    <NuxtLayout :name="layout"t>
+    <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
   </div>
