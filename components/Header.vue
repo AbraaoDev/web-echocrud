@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 const navLinks = [
   { name: 'Início', href: '/app' },
-  { name: 'Lojas', href: '/app/stores' },
+  // { name: 'Lojas', href: '/app/stores' },
 ]
 
 const user = {

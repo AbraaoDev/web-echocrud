@@ -9,15 +9,22 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { useEstablishmentTable } from './useEstablishmentTable'
-import EstablishmentEditDialog from './dialog/Establishment.Edit.Dialog.vue'
+import { useStoreTable } from './useStoreTable'
 import ConfirmationDialog from '../shared/ConfirmationDialog.vue'
+import StoreEditDialog from './dialog/Store.Edit.Dialog.vue'
+
+const props = defineProps({
+  establishmentId: {
+    type: String,
+    required: true,
+  },
+})
 
 const isEditDialogOpen = ref(false)
-const selectedEstablishmentId = ref<string | null>(null)
+const selectedStoreId = ref<string | null>(null)
 
 function handleEdit(id: string) {
-  selectedEstablishmentId.value = id
+  selectedStoreId.value = id
   isEditDialogOpen.value = true
 }
 
@@ -29,7 +36,8 @@ const {
   handleConfirmDelete,
   isConfirmDialogOpen,
   isDeletePending,
-} = useEstablishmentTable({
+} = useStoreTable({
+  establishmentId: toRef(props, 'establishmentId'),
   onEdit: handleEdit,
 })
 </script>
@@ -55,7 +63,7 @@ const {
         <template v-if="isLoading">
           <TableRow>
             <TableCell :colSpan="columns.length" class="h-24 text-center">
-              Carregando dados...
+              Carregando lojas...
             </TableCell>
           </TableRow>
         </template>
@@ -65,7 +73,7 @@ const {
               :colSpan="columns.length"
               class="h-24 text-center text-red-600"
             >
-              Falha ao carregar os dados.
+              Falha ao carregar as lojas.
             </TableCell>
           </TableRow>
         </template>
@@ -86,7 +94,7 @@ const {
         <template v-else>
           <TableRow>
             <TableCell :colSpan="columns.length" class="h-24 text-center">
-              Nenhum resultado encontrado.
+              Nenhuma loja encontrada.
             </TableCell>
           </TableRow>
         </template>
@@ -96,7 +104,7 @@ const {
 
   <div class="flex items-center justify-end space-x-2 py-4">
     <div class="flex-1 text-sm text-muted-foreground">
-      {{ table.getFilteredRowModel().rows.length }} linha(s) no total.
+      {{ table.getFilteredRowModel().rows.length }} loja(s) nesta página.
     </div>
     <div class="space-x-2">
       <Button
@@ -116,17 +124,17 @@ const {
         Próxima
       </Button>
     </div>
-    <EstablishmentEditDialog
-      v-model:open="isEditDialogOpen"
-      :establishment-id="selectedEstablishmentId"
-    />
-
-    <ConfirmationDialog
-      v-model:open="isConfirmDialogOpen"
-      title="Confirmar Exclusão"
-      description="Tem certeza que deseja excluir este estabelecimento? Esta ação não pode ser desfeita e pode falhar se houver lojas vinculadas."
-      :is-pending="isDeletePending"
-      @confirm="handleConfirmDelete"
-    />
   </div>
+  <ConfirmationDialog
+    v-model:open="isConfirmDialogOpen"
+    title="Confirmar Exclusão"
+    description="Tem certeza que deseja excluir esta loja? Esta ação não pode ser desfeita."
+    :is-pending="isDeletePending"
+    @confirm="handleConfirmDelete"
+  />
+  <StoreEditDialog
+    v-model:open="isEditDialogOpen"
+    :store-id="selectedStoreId"
+    :establishment-id="props.establishmentId"
+  />
 </template>

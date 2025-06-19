@@ -3,20 +3,17 @@ import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
-
-import {
-  establishmentSchema,
-  type EstablishmentSchema,
-} from '@/src/schemas/establishment.schema'
-import { createEstablishmentAction } from '@/src/actions/establishment.actions'
+import type { FetchError } from 'ofetch'
 
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { toast } from 'vue-sonner'
-import type { FetchError } from 'ofetch'
+import { storeSchema, type StoreSchema } from '~/src/schemas/store.schema'
+import { createStoreAction } from '~/src/actions/store.actions'
 
 const props = defineProps<{
+  establishmentId: string
   onSuccess?: () => void
 }>()
 
@@ -24,29 +21,32 @@ const queryClient = useQueryClient()
 
 const { handleSubmit, defineField, errors, resetForm, setFieldError } = useForm(
   {
-    validationSchema: toTypedSchema(establishmentSchema),
+    validationSchema: toTypedSchema(storeSchema),
   }
 )
 
 const [name, nameAttrs] = defineField('name')
-const [corporateName, corporateNameAttrs] = defineField('corporate_name')
-const [corporateNumber, corporateNumberAttrs] = defineField('corporate_number')
+const [storeName, storeNameAttrs] = defineField('store_name')
+const [storeNumber, storeNumberAttrs] = defineField('store_number')
 const [address, addressAttrs] = defineField('address')
 const [number, numberAttrs] = defineField('number')
 const [city, cityAttrs] = defineField('city')
 const [state, stateAttrs] = defineField('state')
 const [zipCode, zipCodeAttrs] = defineField('zip_code')
 
-const {
-  mutate,
-  isPending,
-  error: mutationError,
-  data: mutationResult,
-} = useMutation<any, FetchError<{ message: string }>, EstablishmentSchema>({
-  mutationFn: createEstablishmentAction,
-  onSuccess: (result) => {
-    toast.success('Sucesso!', {
-      description: 'Estabelecimento criado com sucesso!',
+const { mutate, isPending } = useMutation<
+  any,
+  FetchError<{ message: string }>,
+  StoreSchema
+>({
+  mutationFn: (storeData) =>
+    createStoreAction(props.establishmentId, storeData),
+  onSuccess: () => {
+    toast.success('Loja criada com sucesso!', {
+      description: 'A nova loja já está disponível para visualização.',
+    })
+    queryClient.invalidateQueries({
+      queryKey: ['stores', props.establishmentId],
     })
     queryClient.invalidateQueries({ queryKey: ['establishments'] })
     resetForm()
@@ -57,11 +57,11 @@ const {
   onError: (error) => {
     if (error.statusCode === 409) {
       const errorMessage = error.data?.message || 'Este CNPJ já está em uso.'
-      setFieldError('corporate_number', errorMessage)
+      setFieldError('store_number', errorMessage)
       toast.error('Verifique o campo CNPJ.')
     } else {
       const errorMessage = error.data?.message || 'Ocorreu um erro inesperado.'
-      toast.error('Falha ao criar.', {
+      toast.error('Falha ao criar loja.', {
         description: errorMessage,
       })
     }
@@ -81,58 +81,59 @@ const onSubmit = handleSubmit((values) => {
         id="name"
         v-model="name"
         v-bind="nameAttrs"
-        placeholder="Tech Solutions Ltda"
+        placeholder="Varejo Center"
       />
-      <p v-if="errors.name" class="text-sm text-red-500">{{ errors.name }}</p>
-    </div>
-
-    <div class="grid gap-2">
-      <Label for="corporate_name">Razão Social</Label>
-      <Input
-        id="corporate_name"
-        v-model="corporateName"
-        v-bind="corporateNameAttrs"
-        placeholder="Tech Solutions Desenvolvimento de Software Ltda"
-      />
-      <p v-if="errors.corporate_name" class="text-sm text-red-500">
-        {{ errors.corporate_name }}
+      <p v-if="errors.name" class="text-sm text-red-500">
+        {{ errors.name }}
       </p>
     </div>
 
     <div class="grid gap-2">
-      <Label for="corporate_number">CNPJ</Label>
+      <Label for="store_name">Nome Corporativo</Label>
       <Input
-        id="corporate_number"
-        v-model="corporateNumber"
-        v-bind="corporateNumberAttrs"
-        placeholder="12.345.678/0001-90"
+        id="store_name"
+        v-model="storeName"
+        v-bind="storeNameAttrs"
+        placeholder="Comércio Varejista Center Ltda"
+      />
+      <p v-if="errors.store_name" class="text-sm text-red-500">
+        {{ errors.store_name }}
+      </p>
+    </div>
+
+    <div class="grid gap-2">
+      <Label for="store_number">CNPJ</Label>
+      <Input
+        id="store_number"
+        v-model="storeNumber"
+        v-bind="storeNumberAttrs"
+        placeholder="98.765.432/0001-10"
         v-mask="'##.###.###/####-##'"
       />
-      <p v-if="errors.corporate_number" class="text-sm text-red-500">
-        {{ errors.corporate_number }}
+      <p v-if="errors.store_number" class="text-sm text-red-500">
+        {{ errors.store_number }}
       </p>
     </div>
+
     <div class="grid gap-2">
       <Label for="address">Endereço</Label>
       <Input
         id="address"
         v-model="address"
         v-bind="addressAttrs"
-        placeholder="Rua das Tecnologias"
+        placeholder="Avenida Principal"
       />
       <p v-if="errors.address" class="text-sm text-red-500">
         {{ errors.address }}
       </p>
     </div>
-
     <div class="grid gap-2">
       <Label for="number">Número</Label>
       <Input
         id="number"
         v-model="number"
         v-bind="numberAttrs"
-        placeholder="123"
-        v-mask="'####################'"
+        placeholder="456"
       />
       <p v-if="errors.number" class="text-sm text-red-500">
         {{ errors.number }}
@@ -145,12 +146,12 @@ const onSubmit = handleSubmit((values) => {
         id="city"
         v-model="city"
         v-bind="cityAttrs"
-        placeholder="São Paulo"
+        placeholder="Campinas"
       />
       <p v-if="errors.city" class="text-sm text-red-500">{{ errors.city }}</p>
     </div>
     <div class="grid gap-2">
-      <Label for="state">Estado</Label>
+      <Label for="state">Estado (UF)</Label>
       <Input
         id="state"
         v-model="state"
@@ -168,7 +169,7 @@ const onSubmit = handleSubmit((values) => {
         id="zip_code"
         v-model="zipCode"
         v-bind="zipCodeAttrs"
-        placeholder="01234-567"
+        placeholder="13001-001"
         v-mask="'#####-###'"
       />
       <p v-if="errors.zip_code" class="text-sm text-red-500">
@@ -176,20 +177,10 @@ const onSubmit = handleSubmit((values) => {
       </p>
     </div>
 
-    <div
-      v-if="mutationResult && !mutationResult.success"
-      class="mt-2 text-center text-sm text-red-500"
-    >
-      <p>{{ mutationResult.message }}</p>
-    </div>
-    <div v-if="mutationError" class="mt-2 text-center text-sm text-red-500">
-      <p>Ocorreu um erro inesperado. Tente novamente.</p>
-    </div>
-
     <div class="flex justify-end pt-4">
       <Button type="submit" :disabled="isPending">
-        <span v-if="isPending">Salvando...</span>
-        <span v-else>Salvar</span>
+        <span v-if="isPending">Salvando Loja...</span>
+        <span v-else>Salvar Loja</span>
       </Button>
     </div>
   </form>

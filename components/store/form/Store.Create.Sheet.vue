@@ -9,7 +9,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import EstablishmentForm from './Establishment.Form.vue'
+import StoreForm from './Store.Form.vue'
+
+const props = defineProps<{
+  establishmentId: string
+}>()
 
 const isSheetOpen = ref(false)
 
@@ -21,18 +25,21 @@ function closeSheet() {
 <template>
   <Sheet v-model:open="isSheetOpen">
     <SheetTrigger as-child>
-      <Button> Adicionar Estabelecimento </Button>
+      <Button>Adicionar Loja</Button>
     </SheetTrigger>
     <SheetContent class="w-full sm:max-w-2xl overflow-y-auto">
       <SheetHeader>
-        <SheetTitle>Adicionar Novo Estabelecimento</SheetTitle>
+        <SheetTitle>Adicionar Nova Loja</SheetTitle>
         <SheetDescription>
-          Preencha os campos abaixo para cadastrar um novo estabelecimento no
-          sistema.
+          Preencha os campos abaixo para cadastrar uma nova loja neste
+          estabelecimento.
         </SheetDescription>
       </SheetHeader>
 
-      <EstablishmentForm :on-success="closeSheet" />
+      <StoreForm
+        :establishment-id="props.establishmentId"
+        :on-success="closeSheet"
+      />
     </SheetContent>
   </Sheet>
 </template>

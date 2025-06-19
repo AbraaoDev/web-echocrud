@@ -17,7 +17,6 @@ import EstablishmentCreateSheet from '~/components/establishment/form/Establishm
         </p>
       </div>
       <EstablishmentCreateSheet />
-      <!-- <Button @click="createEstablishment"> Adicionar Estabelecimento </Button> -->
     </div>
     <div class="container mx-auto">
       <EstablishmentDatatable />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MoreHorizontal } from 'lucide-vue-next'
+import { MoreHorizontal, Pencil, Store, Trash2 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -45,12 +45,26 @@ const handleDelete = () => {
           class="text-[10px] text-muted-foreground tracking-wider"
           >AÇÕES</DropdownMenuLabel
         >
-        <DropdownMenuItem @click="handleGoToStores">
+        <DropdownMenuItem
+          @click="handleGoToStores"
+          class="flex items-center gap-2 cursor-pointer"
+        >
+          <Store class="h-4 w-4" />
           Ver Lojas
         </DropdownMenuItem>
-        <DropdownMenuItem @click="handleEdit"> Editar </DropdownMenuItem>
+        <DropdownMenuItem
+          @click="handleEdit"
+          class="flex items-center gap-2 cursor-pointer"
+        >
+          <Pencil class="h-4 w-4" />
+          Editar
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem class="text-red-600" @click="handleDelete">
+        <DropdownMenuItem
+          class="text-red-600 flex items-center gap-2 cursor-pointer"
+          @click="handleDelete"
+        >
+          <Trash2 class="h-4 w-4 text-red-600" />
           Excluir
         </DropdownMenuItem>
       </DropdownMenuContent>

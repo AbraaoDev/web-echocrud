@@ -1,6 +1,6 @@
 import { h } from 'vue'
 import { createColumnHelper } from '@tanstack/vue-table'
-import { ArrowUpDown } from 'lucide-vue-next'
+import { ArrowUpDown, ExternalLink } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import type { Establishment } from '~/src/types/establishment.interfaces'
 import EstablishmentActionsCell from './EstablishmentActionsCell.vue'
@@ -43,6 +43,22 @@ export const getEstablishmentColumns = (
   }),
   columnHelper.accessor('storeCount', {
     header: 'Nº Lojas',
+    cell: ({ row }) => {
+      const establishmentId = row.original.id
+      const storeCount = row.getValue('storeCount')
+      return h(
+        Button,
+        {
+          variant: 'ghost',
+          onClick: () => actions.onGoToStores(establishmentId),
+          class: 'flex items-center gap-2',
+        },
+        () => [
+          storeCount,
+          h(ExternalLink, { class: 'h-4 w-4 text-muted-foreground' }),
+        ]
+      )
+    },
   }),
   columnHelper.display({
     id: 'actions',

@@ -24,6 +24,9 @@ export function useEstablishmentTable({
   const queryClient = useQueryClient()
   const sorting = ref<SortingState>([])
 
+  const isConfirmDialogOpen = ref(false)
+  const establishmentToDeleteId = ref<string | null>(null)
+
   const handleMutationError = (error: FetchError | unknown) => {
     if (typeof error === 'object' && error !== null && 'data' in error) {
       const fetchError = error as FetchError
@@ -51,21 +54,29 @@ export function useEstablishmentTable({
     queryFn: () => fetchEstablishments(),
   })
 
-  const { mutate: deleteEstablishment } = useMutation<
-    { success: boolean },
-    FetchError,
-    string
-  >({
-    mutationFn: (id: string) => deleteEstablishmentAction(id),
-    onSuccess: () => {
-      toast.success('Estabelecimento excluído com sucesso!')
-      queryClient.invalidateQueries({ queryKey: ['establishments'] })
-    },
-    onError: handleMutationError,
-  })
+  const { mutate: deleteEstablishment, isPending: isDeletePending } =
+    useMutation<{ success: boolean }, FetchError, string>({
+      mutationFn: (id: string) => deleteEstablishmentAction(id),
+      onSuccess: () => {
+        toast.success('Estabelecimento excluído com sucesso!')
+        queryClient.invalidateQueries({ queryKey: ['establishments'] })
+        isConfirmDialogOpen.value = false
+      },
+      onError: handleMutationError,
+    })
 
-  const onGoToStores = (id: string) => console.log(`toStores: ${id}`)
-  const onDelete = (id: string) => deleteEstablishment(id)
+  const onGoToStores = (id: string) => navigateTo(`/app/stores/${id}`)
+
+  const onDelete = (id: string) => {
+    establishmentToDeleteId.value = id
+    isConfirmDialogOpen.value = true
+  }
+
+  const handleConfirmDelete = () => {
+    if (establishmentToDeleteId.value) {
+      deleteEstablishment(establishmentToDeleteId.value)
+    }
+  }
 
   const columns = getEstablishmentColumns({ onEdit, onGoToStores, onDelete })
 
@@ -95,5 +106,8 @@ export function useEstablishmentTable({
     columns,
     isLoading,
     isError,
+    isConfirmDialogOpen,
+    isDeletePending,
+    handleConfirmDelete,
   }
 }
