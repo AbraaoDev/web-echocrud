@@ -1,5 +1,8 @@
-import type { AxiosInstance } from 'axios'
 import type { Establishment } from '../types/establishment.interfaces'
+import type {
+  EstablishmentSchema,
+  UpdateEstablishmentSchema,
+} from '../schemas/establishment.schema'
 
 type ApiEstablishmentResponse = {
   ID: number
@@ -13,6 +16,7 @@ type ApiEstablishmentResponse = {
   number: string
   stores: any[]
 }
+
 // mapper necessário de snake para camel
 function mapApiToEstablishment(
   apiData: ApiEstablishmentResponse
@@ -31,18 +35,59 @@ function mapApiToEstablishment(
   }
 }
 
-export async function fetchEstablishments(
-  apiClient: AxiosInstance
-): Promise<Establishment[]> {
-  const response =
-    await apiClient.get<ApiEstablishmentResponse[]>('/establishments')
-  return response.data.map(mapApiToEstablishment)
+export async function fetchEstablishments(): Promise<Establishment[]> {
+  const config = useRuntimeConfig()
+  const response = await $fetch<ApiEstablishmentResponse[]>('/establishments', {
+    baseURL: config.public.apiBase,
+  })
+  return response.map(mapApiToEstablishment)
+}
+
+export async function createEstablishmentAction(data: EstablishmentSchema) {
+  const config = useRuntimeConfig()
+  return await $fetch('/establishments', {
+    method: 'POST',
+    baseURL: config.public.apiBase,
+    body: data,
+  })
+}
+
+export async function fetchEstablishmentById(
+  id: string
+): Promise<Establishment> {
+  const config = useRuntimeConfig()
+  const apiData = await $fetch<ApiEstablishmentResponse>(
+    `/establishments/${id}`,
+    {
+      baseURL: config.public.apiBase,
+    }
+  )
+  return mapApiToEstablishment(apiData)
+}
+
+export async function updateEstablishmentAction({
+  id,
+  data,
+}: {
+  id: string
+  data: UpdateEstablishmentSchema
+}) {
+  const config = useRuntimeConfig()
+
+  return await $fetch(`/establishments/${id}`, {
+    method: 'PUT',
+    baseURL: config.public.apiBase,
+    body: data,
+  })
 }
 
 export async function deleteEstablishmentAction(
-  id: string,
-  apiClient: AxiosInstance
+  id: string
 ): Promise<{ success: boolean }> {
-  await apiClient.delete(`/establishments/${id}`)
+  const config = useRuntimeConfig()
+  await $fetch(`/establishments/${id}`, {
+    method: 'DELETE',
+    baseURL: config.public.apiBase,
+  })
   return { success: true }
 }

@@ -41,7 +41,10 @@ const handleDelete = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Ações</DropdownMenuLabel>
+        <DropdownMenuLabel
+          class="text-[10px] text-muted-foreground tracking-wider"
+          >AÇÕES</DropdownMenuLabel
+        >
         <DropdownMenuItem @click="handleGoToStores">
           Ver Lojas
         </DropdownMenuItem>

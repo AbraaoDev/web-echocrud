@@ -124,11 +124,11 @@ const onSubmit = handleSubmit((values) => {
           </form>
         </div>
       </section>
-      <aside class="hidden lg:block py-32">
+      <aside class="hidden lg:block">
         <NuxtImg
           src="/hero-login.svg"
           alt="Gestão de Estabelecimentos e Lojas"
-          class="w-full"
+          class="w-full h-full"
         />
       </aside>
     </div>
