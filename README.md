@@ -35,7 +35,7 @@ Bem-vindo ao projeto da EchoCRUD! Este repositório contém o código-fonte do F
 3. Install the dependencies
 
    ```zsh
-   pnpm dev
+   pnpm i
    ```
 
 4. **Execute aplication**
