@@ -1,14 +1,14 @@
-import axios from "axios";
+import axios, { type AxiosInstance } from 'axios'
 
-export const useApiClient = () => {
-  const config = useRuntimeConfig();
+export const useApiClient = (): AxiosInstance => {
+  const config = useRuntimeConfig()
 
   const apiClient = axios.create({
     baseURL: config.public.apiBase,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
-  });
+  })
 
-  return apiClient;
-};
+  return apiClient
+}

@@ -1,6 +1,8 @@
 <template>
   <div class="min-h-screen bg-background">
-    <p>Header</p>
-    <slot />
+    <Header />
+    <div class="max-w-6xl mx-auto">
+      <slot />
+    </div>
   </div>
 </template>

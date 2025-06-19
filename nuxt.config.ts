@@ -1,31 +1,32 @@
-import tailwindcss from "@tailwindcss/vite";
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  modules: ["shadcn-nuxt", "@nuxtjs/google-fonts", "@nuxt/image"],
+  modules: ['shadcn-nuxt', '@nuxtjs/google-fonts', '@nuxt/image'],
   googleFonts: {
     families: {
-      "Titillium Web": [400, 600, 700],
+      'Titillium Web': [400, 600, 700],
     },
-    display: "swap",
+    display: 'swap',
   },
   image: {
     quality: 80,
   },
-  css: ["~/assets/css/tailwind.css"],
+  css: ['~/assets/css/tailwind.css'],
   vite: {
     plugins: [tailwindcss()],
   },
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || "/api/v1",
+      apiBase:
+        process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3333/api/v1',
     },
   },
   shadcn: {
-    prefix: "",
+    prefix: '',
     /**
      * Directory that the component lives in.
      * @default "./com'onents/ui"
  '   */
-    componentDir: "./components/ui",
+    componentDir: './components/ui',
   },
-});
+})
