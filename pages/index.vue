@@ -1,4 +1,7 @@
 <script setup lang="ts">
+useHead({
+  title: 'EchoCRUD',
+})
 import { z } from 'zod'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
